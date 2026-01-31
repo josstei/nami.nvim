@@ -1,0 +1,263 @@
+*nami.txt*  A Neovim colorscheme inspired by ocean waves at sunset
+
+==============================================================================
+CONTENTS                                                       *nami-contents*
+
+    1. Introduction ........................... |nami-introduction|
+    2. Installation ........................... |nami-installation|
+    3. Usage .................................. |nami-usage|
+    4. Configuration .......................... |nami-configuration|
+    5. API .................................... |nami-api|
+    6. Custom Palettes ......................... |nami-custom-palettes|
+    7. Colors ................................. |nami-colors|
+    8. License ................................ |nami-license|
+
+==============================================================================
+1. INTRODUCTION                                            *nami-introduction*
+
+Nami is a beautiful Neovim colorscheme inspired by ocean waves at sunset. It features a deep blue-black background with vibrant
+teal, turquoise, coral, and sunset orange accents.
+
+Features:
+  - Rich ocean-sunset color palette
+  - Registry-centric architecture for maximum extensibility
+  - Runtime plugin registration with lazy evaluation
+  - Comprehensive plugin support (Telescope, nvim-tree, GitSigns, nvim-cmp)
+  - Full TreeSitter integration
+  - LSP diagnostics and semantic token support
+  - Customizable styles and transparency
+  - Terminal colors for Neovim's integrated terminal
+
+==============================================================================
+2. INSTALLATION                                            *nami-installation*
+
+Using lazy.nvim:
+>lua
+    {
+      "josstei/nami.nvim",
+      lazy = false,
+      priority = 1000,
+      config = function()
+        require("nami").setup()
+        vim.cmd([[colorscheme nami]])
+      end,
+    }
+<
+
+Using packer.nvim:
+>lua
+    use {
+      "josstei/nami.nvim",
+      config = function()
+        require("nami").setup()
+        vim.cmd([[colorscheme nami]])
+      end
+    }
+<
+
+==============================================================================
+3. USAGE                                                          *nami-usage*
+
+Basic usage:
+>vim
+    colorscheme nami
+<
+
+Or in Lua:
+>lua
+    vim.cmd([[colorscheme nami]])
+<
+
+With configuration:
+>lua
+    require("nami").setup({
+      transparent = false,
+      dim_inactive = false,
+    })
+    vim.cmd([[colorscheme nami]])
+<
+
+==============================================================================
+4. CONFIGURATION                                          *nami-configuration*
+
+Nami can be configured using the setup() function:
+
+require("nami").setup({opts})                                  *nami.setup()*
+
+    Valid keys for {opts}:
+
+    palette                                                  *nami-palette*
+        Type: string
+        Default: "nami"
+        Select which color palette to use.
+
+    transparent                                          *nami-transparent*
+        Type: boolean
+        Default: false
+        Enable transparent background.
+
+    dim_inactive                                        *nami-dim_inactive*
+        Type: boolean
+        Default: false
+        Dim inactive windows.
+
+    integrations                                        *nami-integrations*
+        Type: table
+        Enable or disable highlight integrations.
+
+        integrations.treesitter                    *nami-integrations-treesitter*
+            Type: boolean
+            Default: true
+            Enable TreeSitter highlight groups.
+
+        integrations.lsp                              *nami-integrations-lsp*
+            Type: boolean
+            Default: true
+            Enable LSP diagnostic and semantic token highlights.
+
+    styles                                                    *nami-styles*
+        Type: table
+        Customize the style of different syntax elements.
+        Available styles: bold, italic, underline, undercurl, strikethrough
+
+        Example:
+>lua
+            styles = {
+              comments = { italic = true },
+              keywords = { bold = true },
+              functions = { bold = false },
+              variables = {},
+              types = {},
+              strings = {},
+            }
+<
+
+    on_highlights                                        *nami-on_highlights*
+        Type: function(colors, config)
+        Callback function to add custom highlights.
+
+        Example:
+>lua
+            on_highlights = function(colors, config)
+              return {
+                Comment = { fg = colors.palette.fg_dark, italic = true },
+              }
+            end
+<
+
+==============================================================================
+5. API                                                               *nami-api*
+
+require("nami").setup({opts})                                  *nami.setup()*
+    Configure and initialize nami. Must be called before loading the
+    colorscheme. See |nami-configuration| for available options.
+
+require("nami").load()                                          *nami.load()*
+    Load the colorscheme. Called automatically when you run
+    `:colorscheme nami`.
+
+require("nami").register_plugin({name}, {fn})          *nami.register_plugin()*
+    Register a custom plugin highlight function at runtime. The function
+    receives {colors} and {config} and should return a table of highlight
+    groups. If the colorscheme is already loaded, the highlights are
+    applied immediately.
+
+    Example:
+>lua
+        require("nami").register_plugin("my-plugin", function(colors, config)
+          return {
+            MyPluginNormal = { fg = colors.semantic.fg, bg = colors.palette.bg_alt },
+          }
+        end)
+<
+
+require("nami").unregister_plugin({name})            *nami.unregister_plugin()*
+    Remove a previously registered plugin.
+
+require("nami").set_palette({name})                      *nami.set_palette()*
+    Switch to a different palette at runtime. Reloads the colorscheme
+    automatically.
+
+require("nami").palettes()                                  *nami.palettes()*
+    Returns a list of available palette names.
+
+==============================================================================
+6. CUSTOM PALETTES                                      *nami-custom-palettes*
+
+Create a palette module at:
+
+    lua/nami/palettes/{name}.lua
+
+Then select it:
+>lua
+    require("nami").setup({ palette = "{name}" })
+<
+
+Your module must return a table with `palette` and `semantic` subtables. Missing
+keys will cause warnings and the palette will be rejected. Use the default
+palette as a reference:
+
+    lua/nami/palettes/nami.lua
+
+==============================================================================
+7. COLORS                                                        *nami-colors*
+
+Base Colors:
+  - bg:         #0e1922 (Deep blue-black)
+  - fg:         #e8dcc8 (Warm beige/cream)
+  - cursor:     #ff8c6b (Bright coral)
+
+Accent Colors:
+  - teal:       #4fc9c9 (Bright turquoise)
+  - coral:      #ff8c6b (Vibrant coral)
+  - orange:     #ffa857 (Sunset orange)
+  - yellow:     #ffd48c (Bright yellow)
+  - blue:       #5a7aaa (Ocean blue)
+  - purple:     #aa5a7a (Mauve)
+  - cyan:       #5dd9d9 (Bright cyan)
+
+Access colors programmatically:
+>lua
+    local nami = require("nami.palettes.nami")
+    local palette = nami.palette
+    local semantic = nami.semantic
+<
+
+Or via the on_highlights callback:
+>lua
+    require("nami").setup({
+      on_highlights = function(colors, config)
+        local p = colors.palette
+        local c = colors.semantic
+        return {}
+      end,
+    })
+<
+
+==============================================================================
+8. LICENSE                                                      *nami-license*
+
+MIT License
+
+Copyright (c) 2026
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+==============================================================================
+vim:tw=78:ts=8:ft=help:norl:
