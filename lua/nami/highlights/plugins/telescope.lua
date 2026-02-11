@@ -4,9 +4,11 @@ function M.setup(colors, config)
   local c = colors.semantic
   local p = colors.palette
 
+  local bg_float = config.transparent and p.none or p.bg_float
+
   return {
-    TelescopeNormal         = { fg = c.fg, bg = p.bg_float },
-    TelescopeBorder         = { fg = c.border, bg = p.bg_float },
+    TelescopeNormal         = { fg = c.fg, bg = bg_float },
+    TelescopeBorder         = { fg = c.border, bg = bg_float },
     TelescopeTitle          = { fg = c.func, bold = true },
 
     TelescopePromptNormal   = { fg = c.fg, bg = p.bg_highlight },
@@ -15,8 +17,8 @@ function M.setup(colors, config)
     TelescopePromptPrefix   = { fg = c.cursor },
     TelescopePromptCounter  = { fg = c.comment },
 
-    TelescopeResultsNormal  = { fg = c.fg, bg = p.bg_float },
-    TelescopeResultsBorder  = { fg = c.border, bg = p.bg_float },
+    TelescopeResultsNormal  = { fg = c.fg, bg = bg_float },
+    TelescopeResultsBorder  = { fg = c.border, bg = bg_float },
     TelescopeResultsTitle   = { fg = c.func, bold = true },
 
     TelescopePreviewNormal  = { fg = c.fg, bg = p.bg },

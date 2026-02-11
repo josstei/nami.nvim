@@ -5,14 +5,15 @@ function M.setup(colors, config)
   local p = colors.palette
 
   local bg = config.transparent and p.none or p.bg
+  local bg_float = config.transparent and p.none or p.bg_float
   local bg_nc = config.dim_inactive and p.bg_dark or bg
 
   return {
     Normal       = { fg = c.fg, bg = bg },
-    NormalFloat  = { fg = c.fg, bg = p.bg_float },
+    NormalFloat  = { fg = c.fg, bg = bg_float },
     NormalNC     = { fg = c.fg, bg = bg_nc },
-    FloatBorder  = { fg = c.border, bg = p.bg_float },
-    FloatTitle   = { fg = c.func, bg = p.bg_float, bold = true },
+    FloatBorder  = { fg = c.border, bg = bg_float },
+    FloatTitle   = { fg = c.func, bg = bg_float, bold = true },
 
     Cursor       = { fg = p.bg, bg = c.cursor },
     lCursor      = { link = "Cursor" },
